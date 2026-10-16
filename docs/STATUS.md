@@ -2,6 +2,13 @@
 
 更新时间：2026-10-17
 
+## 已发布可用版本
+- v0.5.1-beta：https://github.com/qq2426277189-tech/controller-desktop/releases/tag/v0.5.1-beta
+- 安装包 SHA-256：D32FBCD841813497DB64E6197FD7AB736502112C825786B29B9A25EA84FFA5FA
+- 默认安装到 D:\ControllerDesktop，不含驱动
+
+更新时间：2026-10-17
+
 ## 已完成
 - 开发目录 D:\ControllerDesktopDev：app/tools/src/build/docs/data
 - .NET SDK 8.0.426：D:\ControllerDesktopDev\app
@@ -30,3 +37,4 @@
 
 ## 当前优先目标
 按 TODO 的 P1 项继续，先做图形化改键编辑器。
+
