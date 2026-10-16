@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>alpha.1</VersionSuffix>
     <Product>ControllerDesktop</Product>
     <Company>ControllerDesktop Project</Company>
     <Authors>qq2426277189-tech</Authors>

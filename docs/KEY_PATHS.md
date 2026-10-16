@@ -1,0 +1,7 @@
+- 正式开发目录：D:\ControllerDesktopDev
+- 源码：D:\ControllerDesktopDev\src\ControllerDesktop
+- .NET SDK：D:\ControllerDesktopDev\app\dotnet.exe
+- Inno Setup：D:\ControllerDesktopDev\tools\InnoSetup\ISCC.exe
+- GitHub：https://github.com/qq2426277189-tech/controller-desktop
+- 旧个人版原型：D:\ControllerDesktop（不要删除或覆盖，除非用户确认）
+- 桌面快照：C:\Users\24262\Desktop\手柄控制鼠标软件项目

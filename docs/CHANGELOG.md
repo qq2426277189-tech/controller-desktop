@@ -1,12 +1,12 @@
-# 变更记录
+﻿# 变更记录
 
-## 2026-10-17
-- 创建 D:\ControllerDesktopDev 开发目录和分类结构。
-- 安装 .NET SDK 8.0.426 到 D:\ControllerDesktopDev\app。
-- 安装 Inno Setup 6.7.3 到 D:\ControllerDesktopDev\tools\InnoSetup。
-- 创建 v2 .NET 8 解决方案：App、Core、Input、Updater、Driver.Abstractions。
-- `dotnet build ControllerDesktop.sln -c Debug` 成功，0 警告、0 错误。
-- 加入最小 WPF 界面和中英文切换按钮。
-- 加入 PerMonitorV2 DPI 清单。
-- 创建公开仓库 https://github.com/qq2426277189-tech/controller-desktop 并推送初始骨架。
-- GitHub Actions 因 token workflow 权限缺失暂未推送。
+## 2026-10-17 v2.0.0-alpha.1
+- 建立 WPF 主界面导航框架。
+- 建立中英文语言服务。
+- 建立配置模型和 ProfileStore。
+- 建立 SendInput 输入后端。
+- 建立驱动安装接口。
+- 建立 GitHub Releases 更新检查模块。
+- 每次编译后自动刷新桌面续接卡、源码快照和 ZIP 包。
+- 修复续接卡中文编码问题。
+- 公开仓库推送初始骨架和项目文档。
