@@ -15,3 +15,9 @@
 - 生成可用的安装包并发布到 GitHub Releases。
 - 安装包默认安装到 D:\ControllerDesktop，包含当前可用的手柄桌面控制功能，不包含驱动。
 
+
+## 2026-10-17 部署 v0.5.1-beta
+- 静默部署安装包到 D:\ControllerDesktop。
+- 桌面快捷方式已指向软件本体图标。
+- 清理旧临时工作区，旧个人版源码归档到 D:\ControllerDesktopDev\legacy。
+

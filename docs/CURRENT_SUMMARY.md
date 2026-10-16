@@ -9,6 +9,12 @@
 - 安装包：https://github.com/qq2426277189-tech/controller-desktop/releases/tag/v0.5.1-beta
 - 默认安装到 D:\ControllerDesktop，不含驱动
 
+## 部署状态
+- v0.5.1-beta 已部署到 D:\ControllerDesktop
+- 桌面快捷方式“手柄桌面控制”已指向软件本体图标
+- 当前进程运行正常，controller-error.log 无错误
+- 旧临时工作区已清理，旧个人版源码归档到 D:\ControllerDesktopDev\legacy
+
 ## 本批次已完成
 - 当前可用版本 v0.5.1-beta 已打包并发布到 GitHub Releases
 - v2.0.0-alpha.1：WPF 主界面框架、中英文语言服务、配置模型、ProfileStore、SendInput 后端、驱动接口、更新检查模块
@@ -35,3 +41,4 @@
 - 可用版本安装包：https://github.com/qq2426277189-tech/controller-desktop/releases/tag/v0.5.1-beta
 - GitHub：https://github.com/qq2426277189-tech/controller-desktop
 - 旧个人版：D:\ControllerDesktop（不要删除或覆盖，除非用户确认）
+
