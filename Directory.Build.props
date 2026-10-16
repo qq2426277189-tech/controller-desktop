@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Product>ControllerDesktop</Product>
+    <Company>ControllerDesktop Project</Company>
+    <Authors>qq2426277189-tech</Authors>
+    <RepositoryUrl>https://github.com/qq2426277189-tech/controller-desktop</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
