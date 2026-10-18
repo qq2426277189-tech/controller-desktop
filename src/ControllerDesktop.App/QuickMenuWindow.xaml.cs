@@ -27,6 +27,12 @@ namespace ControllerDesktop.App
 
         private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e) => RunCurrent();
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            if (List.SelectedIndex >= 0) RunCurrent();
+        }
+
                 private void List_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)

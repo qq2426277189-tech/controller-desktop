@@ -151,7 +151,12 @@ namespace ControllerDesktop.App
 
             DesktopRecovery.HandleChord(previous, current);
             Dispatcher.BeginInvoke(() => HandleYButton(previous, current));
-            if (_quickMenu != null) return; // menu open: skip mappings
+            if (_quickMenu != null)
+            {
+                // Safety: if the menu window leaked (never shown / closed without event), clear it.
+                if (!_quickMenu.IsLoaded) _quickMenu = null;
+                else return; // menu open: skip mappings
+            }
 
             var stickActive = Math.Abs(current.RightX) > 9000 || Math.Abs(current.RightY) > 9000;
             if (stickActive) DesktopRecovery.TrackStickActivity(); else DesktopRecovery.StopStickTracking();
@@ -201,10 +206,17 @@ namespace ControllerDesktop.App
                 ("音量-", () => App.Backend.KeyTap("VOLUME_DOWN")),
                 ("静音", () => App.Backend.KeyTap("VOLUME_MUTE"))
             };
-            _quickMenu = new QuickMenuWindow(items);
-            _quickMenu.Closed += (_, _) => _quickMenu = null;
-            _quickMenu.Show();
-            _quickMenu.Activate();
+            try
+            {
+                _quickMenu = new QuickMenuWindow(items);
+                _quickMenu.Closed += (_, _) => _quickMenu = null;
+                _quickMenu.Show();
+                _quickMenu.Activate();
+            }
+            catch
+            {
+                _quickMenu = null;
+            }
         }
 
         private void CloseQuickMenu()
