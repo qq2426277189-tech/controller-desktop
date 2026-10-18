@@ -30,6 +30,7 @@ namespace ControllerDesktop.App
             InitializeComponent();
             _configuration = _store.Load();
             ProfileStore.EnsureDefaults(_configuration);
+            AppRuleLists.Load(AppPaths.ConfigDir);
             App.Gamepad.Tick += OnGamepadTick;
             DesktopRecovery.Notice += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
             DesktopRecovery.RuntimeLog += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
@@ -106,13 +107,40 @@ namespace ControllerDesktop.App
             if (!_updating) UpdatePage();
         }
 
-                        private void OnGamepadTick(GamepadState previous, GamepadState current)
+                        private bool _mappingEnabled = true;
+
+        private bool ComputeMappingEnabled()
+        {
+            var info = ForegroundWatcher.GetForegroundInfo();
+            if (info == null || string.IsNullOrEmpty(info.ProcessName)) return true;
+            var process = info.ProcessName;
+            if (process == "ControllerDesktop") return true;
+            if (process is "哔哩哔哩" or "bilibili") return false;
+            if (AppRuleLists.PassthroughGames.Contains(process)) return false;
+            if (AppRuleLists.MouseGames.Contains(process)) return true;
+            if (!string.IsNullOrEmpty(info.ProcessPath) &&
+                info.ProcessPath.IndexOf("\\steamapps\\common\\", StringComparison.OrdinalIgnoreCase) >= 0)
+                return false;
+            if (info.IsFullscreen && !AppRuleLists.DesktopFullscreen.Contains(process))
+                return false;
+            return true;
+        }
+
+        private void OnGamepadTick(GamepadState previous, GamepadState current)
         {
             var profile = _configuration.Profiles.FirstOrDefault(p => p.Name == _configuration.CurrentProfile);
             if (profile == null) return;
 
-            // Bilibili passthrough: no synthetic input while its window is foreground.
-            if (ForegroundWatcher.IsBilibili()) return;
+            _mappingEnabled = ComputeMappingEnabled();
+            if (!_mappingEnabled)
+            {
+                // Game/bilibili passthrough: hand everything to the game.
+                DesktopRecovery.HandleChord(previous, current); // X+B still works as emergency exit
+                if (current.Has(GamepadButton.Y) && !previous.Has(GamepadButton.Y))
+                    ShowQuickMenu(); // Y still opens menu so user can force-recover
+                DesktopRecovery.StopStickTracking();
+                return;
+            }
 
             DesktopRecovery.HandleChord(previous, current);
             HandleYButton(previous, current);
