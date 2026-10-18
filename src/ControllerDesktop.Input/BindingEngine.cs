@@ -18,8 +18,8 @@ public sealed class BindingEngine
         try
         {
             ApplyBindings(profile, previous, current);
-            ApplyStick(profile.RightStick, current.RightX, current.RightY);
-            ApplyStick(profile.LeftStick, current.LeftX, current.LeftY);
+            ApplyStick(profile.RightStick, current.RightX, current.RightY, ref _accRX, ref _accRY);
+            ApplyStick(profile.LeftStick, current.LeftX, current.LeftY, ref _accLX, ref _accLY);
         }
         catch
         {
@@ -77,26 +77,33 @@ public sealed class BindingEngine
         }
     }
 
-    private double _accX, _accY;
+    private double _accRX, _accRY, _accLX, _accLY;
 
     /// <summary>Continuous mouse movement, legacy 0.5.1 curve + accumulator for smooth motion.</summary>
-    private void ApplyStick(StickSettings stick, short x, short y)
+    private void ApplyStick(StickSettings stick, short x, short y, ref double accX, ref double accY)
     {
         var nx = ApplyDeadzone(x, stick.Deadzone);
         var ny = ApplyDeadzone(y, stick.Deadzone);
-        if (nx == 0 && ny == 0) { _accX = 0; _accY = 0; return; }
+        if (nx == 0 && ny == 0) { accX = 0; accY = 0; return; }
 
         var speed = Math.Max(stick.MouseSpeed, 6);
         double sx = nx * (6.0 + Math.Abs(nx) * (speed - 6.0));
         double syRaw = ny * (6.0 + Math.Abs(ny) * (speed - 6.0));
         double sy = stick.InvertY ? syRaw : -syRaw;
 
-        _accX += sx;
-        _accY += sy;
-        int dx = (int)_accX;
-        int dy = (int)_accY;
-        _accX -= dx;
-        _accY -= dy;
+        // Anti-hitch on fast direction reversal: if sign flipped, reset the
+        // accumulated remainder so it doesn't pull against the new direction.
+        if (Math.Sign(sx) != 0 && Math.Sign(accX) != 0 && Math.Sign(sx) != Math.Sign(accX))
+            accX = 0;
+        if (Math.Sign(sy) != 0 && Math.Sign(accY) != 0 && Math.Sign(sy) != Math.Sign(accY))
+            accY = 0;
+
+        accX += sx;
+        accY += sy;
+        int dx = (int)accX;
+        int dy = (int)accY;
+        accX -= dx;
+        accY -= dy;
         if (dx != 0 || dy != 0)
             _backend.MoveMouse(dx, dy);
     }
