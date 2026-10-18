@@ -121,8 +121,9 @@ namespace ControllerDesktop.App
             if (!string.IsNullOrEmpty(info.ProcessPath) &&
                 info.ProcessPath.IndexOf("\\steamapps\\common\\", StringComparison.OrdinalIgnoreCase) >= 0)
                 return false;
-            if (info.IsFullscreen && !AppRuleLists.DesktopFullscreen.Contains(process))
-                return false;
+            // Fullscreen no longer auto-passthrough (browsers/video players are fullscreen too).
+            // Only passthrough if the game explicitly asks for it via passthrough-games.txt
+            // or if it's a Steam game.
             return true;
         }
 
