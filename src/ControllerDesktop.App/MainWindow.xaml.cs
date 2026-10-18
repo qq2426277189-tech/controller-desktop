@@ -132,6 +132,7 @@ namespace ControllerDesktop.App
             {
                 _yDownAt = DateTime.Now;
                 _yLongHandled = false;
+                ShowQuickMenu(); // tap opens instantly
             }
             else if (pressedNow && !_yLongHandled && (DateTime.Now - _yDownAt).TotalMilliseconds >= 600)
             {
@@ -152,6 +153,9 @@ namespace ControllerDesktop.App
             if (_quickMenu != null) return;
             var items = new List<(string, Action)>
             {
+                ("强制恢复桌面控制", () => DesktopRecovery.ForceRecover("手动恢复")),
+                ("最小化当前窗口", () => App.Backend.KeyTap("LWIN+DOWN")),
+                ("关闭当前窗口", () => App.Backend.KeyTap("ALT+F4")),
                 ("切换窗口 (Alt+Tab)", () => App.Backend.KeyTap("ALT+TAB")),
                 ("显示桌面 (Win+D)", () => App.Backend.KeyTap("LWIN+D")),
                 ("返回上一页 (Alt+←)", () => App.Backend.KeyTap("ALT+LEFT")),
