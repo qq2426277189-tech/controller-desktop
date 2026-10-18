@@ -18,6 +18,7 @@ namespace ControllerDesktop.App
         private readonly ProfileStore _store = new();
         private AppConfiguration _configuration;
         private MappingEditorPage? _mappingPage;
+        private MappingVisualPage? _visualPage;
         private GamepadTestPage? _testPage;
         private QuickMenuWindow? _quickMenu;
         private DateTime _yDownAt = DateTime.MinValue;
@@ -33,6 +34,7 @@ namespace ControllerDesktop.App
             DesktopRecovery.Notice += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
             DesktopRecovery.RuntimeLog += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
             _mappingPage = new MappingEditorPage(_language, _store, _configuration);
+            _visualPage = new MappingVisualPage(_configuration);
             _testPage = new GamepadTestPage(_language);
             _language.SetLanguage(_configuration.Language);
             Loaded += (_, _) => ApplyLanguage();
@@ -51,6 +53,7 @@ namespace ControllerDesktop.App
             NavList.Items.Clear();
             NavList.Items.Add(_language.T("Dashboard"));
             NavList.Items.Add(_language.T("Mapping"));
+            NavList.Items.Add("高级编辑");
             NavList.Items.Add(_language.T("GamepadTest"));
             NavList.Items.Add(_language.T("Profiles"));
             NavList.Items.Add(_language.T("Driver"));
@@ -67,12 +70,17 @@ namespace ControllerDesktop.App
         {
             var index = NavList.SelectedIndex;
             PageTitle.Text = NavList.SelectedItem as string ?? "";
-            if (index == 2 && _testPage != null)
+            if (index == 1 && _visualPage != null)
+            {
+                PageDescription.Text = "";
+                PageHost.Content = _visualPage;
+            }
+            else if (index == 2 && _testPage != null)
             {
                 PageDescription.Text = "";
                 PageHost.Content = _testPage;
             }
-            else if (index == 1 && _mappingPage != null)
+            else if (index == 3 && _mappingPage != null)
             {
                 _mappingPage.Reload(_configuration);
                 PageDescription.Text = "";
@@ -83,9 +91,9 @@ namespace ControllerDesktop.App
                 PageHost.Content = null;
                 PageDescription.Text = index switch
                 {
-                    3 => _language.T("ProfilesPlaceholder"),
-                    4 => _language.T("DriverPlaceholder"),
-                    5 => _language.T("SettingsPlaceholder"),
+                    4 => _language.T("ProfilesPlaceholder"),
+                    5 => _language.T("DriverPlaceholder"),
+                    6 => _language.T("SettingsPlaceholder"),
                     _ => _language.T("FrameworkReady")
                 };
             }
@@ -182,6 +190,8 @@ namespace ControllerDesktop.App
         }
     }
 }
+
+
 
 
 
