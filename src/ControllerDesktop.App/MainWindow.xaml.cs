@@ -150,7 +150,7 @@ namespace ControllerDesktop.App
             }
 
             DesktopRecovery.HandleChord(previous, current);
-            Dispatcher.BeginInvoke(() => HandleYButton(previous, current));
+            Dispatcher.BeginInvoke(() => { HandleYButton(previous, current); HandleMenuNav(previous, current); });
             if (_quickMenu != null)
             {
                 // Safety: if the menu window leaked (never shown / closed without event), clear it.
@@ -172,8 +172,9 @@ namespace ControllerDesktop.App
             {
                 _yDownAt = DateTime.Now;
                 _yLongHandled = false;
-                try { System.IO.File.AppendAllText(System.IO.Path.Combine(ControllerDesktop.Core.AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + "YMenuDebug: opening" + Environment.NewLine); } catch { }
-                ShowQuickMenu(); // tap opens instantly
+                // Tap toggles the menu: open if closed, close if open.
+                if (_quickMenu == null || !_quickMenu.IsLoaded) ShowQuickMenu();
+                else CloseQuickMenu();
             }
             else if (pressedNow && !_yLongHandled && (DateTime.Now - _yDownAt).TotalMilliseconds >= 600)
             {
@@ -183,10 +184,17 @@ namespace ControllerDesktop.App
             }
             else if (!pressedNow && pressedBefore)
             {
-                if (!_yLongHandled) ShowQuickMenu();
                 _yDownAt = DateTime.MinValue;
                 _yLongHandled = false;
             }
+        }
+
+        private void HandleMenuNav(GamepadState previous, GamepadState current)
+        {
+            if (_quickMenu == null || !_quickMenu.IsLoaded) return;
+            if (current.Has(GamepadButton.DpadUp) && !previous.Has(GamepadButton.DpadUp)) _quickMenu.MoveSelection(-1);
+            if (current.Has(GamepadButton.DpadDown) && !previous.Has(GamepadButton.DpadDown)) _quickMenu.MoveSelection(1);
+            if (current.Has(GamepadButton.A) && !previous.Has(GamepadButton.A)) _quickMenu.RunCurrent();
         }
 
         private void ShowQuickMenu()
@@ -242,6 +250,8 @@ namespace ControllerDesktop.App
         }
     }
 }
+
+
 
 
 

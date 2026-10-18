@@ -1,17 +1,14 @@
 <Window x:Class="ControllerDesktop.App.QuickMenuWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        WindowStyle="None" ShowInTaskbar="False" AllowsTransparency="True"
-        Background="Transparent" Width="360" SizeToContent="Height"
-        WindowStartupLocation="CenterScreen" Topmost="True">
-    <Border Background="#F2262933" CornerRadius="10" Padding="12" BorderBrush="#66FFFFFF" BorderThickness="1">
+        WindowStyle="None" ShowInTaskbar="False" ResizeMode="NoResize"
+        Background="#F0262933" Width="380" SizeToContent="Height"
+        WindowStartupLocation="CenterScreen" Topmost="True"
+        ShowActivated="False" Focusable="False">
+    <Border Background="#F0262933" CornerRadius="10" Padding="12" BorderBrush="#66FFFFFF" BorderThickness="1">
         <StackPanel>
             <TextBlock x:Name="HeaderText" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="4,2,0,8" />
-            <ListBox x:Name="List" Background="Transparent" Foreground="White" FontSize="14"
-                     BorderThickness="0" MaxHeight="420"
-                     SelectionChanged="List_SelectionChanged"
-                     MouseDoubleClick="List_MouseDoubleClick"
-                     PreviewKeyDown="List_PreviewKeyDown" />
+            <ItemsControl x:Name="List" Focusable="False" />
         </StackPanel>
     </Border>
 </Window>

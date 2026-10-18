@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ControllerDesktop.App
 {
@@ -15,41 +15,44 @@ namespace ControllerDesktop.App
         {
             InitializeComponent();
             _items = items;
-            List.ItemsSource = items;
-            List.SelectedIndex = 0;
-            Deactivated += (_, _) => Close();
+            HeaderText.Text = "快捷菜单";
+            Render();
+            MouseLeftButtonDown += (_, _) => RunCurrent();
         }
 
-        private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public int SelectedIndex => _index;
+
+        public void MoveSelection(int delta)
         {
-            _index = List.SelectedIndex;
+            if (_items.Count == 0) return;
+            _index = Math.Clamp(_index + delta, 0, _items.Count - 1);
+            Render();
         }
 
-        private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e) => RunCurrent();
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-            if (List.SelectedIndex >= 0) RunCurrent();
-        }
-
-                private void List_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Up: _index = Math.Max(0, _index - 1); List.SelectedIndex = _index; e.Handled = true; break;
-                case Key.Down: _index = Math.Min(_items.Count - 1, _index + 1); List.SelectedIndex = _index; e.Handled = true; break;
-                case Key.A: RunCurrent(); e.Handled = true; break;
-                case Key.B: Close(); e.Handled = true; break;
-            }
-        }
-
-        private void RunCurrent()
+        public void RunCurrent()
         {
             if (_index < 0 || _index >= _items.Count) return;
+            var action = _items[_index].Run;
             Close();
-            _items[_index].Run();
+            action();
+        }
+
+        private void Render()
+        {
+            List.Items.Clear();
+            for (int i = 0; i < _items.Count; i++)
+            {
+                var selected = i == _index;
+                var tb = new TextBlock
+                {
+                    Text = (selected ? "▶ " : "   ") + _items[i].Label,
+                    Foreground = selected ? Brushes.White : new SolidColorBrush(Color.FromRgb(0xCC,0xCC,0xCC)),
+                    FontWeight = selected ? FontWeights.Bold : FontWeights.Normal,
+                    FontSize = 14,
+                    Padding = new Thickness(6, 4, 6, 4)
+                };
+                List.Items.Add(tb);
+            }
         }
     }
 }
-
