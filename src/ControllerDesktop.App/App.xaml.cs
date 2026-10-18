@@ -38,7 +38,7 @@ namespace ControllerDesktop.App
                 };
                 var menu = new WinForms.ContextMenuStrip();
                 menu.Items.Add("显示主窗口", null, (_, _) => { MainWindow.Show(); MainWindow.WindowState = System.Windows.WindowState.Normal; MainWindow.Activate(); });
-                menu.Items.Add("退出", null, (_, _) => Shutdown());
+                menu.Items.Add("退出", null, (_, _) => { (MainWindow as MainWindow)?.RealExit(); Shutdown(); });
                 _trayIcon.ContextMenuStrip = menu;
                 _trayIcon.DoubleClick += (_, _) => { MainWindow.Show(); MainWindow.WindowState = System.Windows.WindowState.Normal; MainWindow.Activate(); };
             }
@@ -66,5 +66,6 @@ namespace ControllerDesktop.App
         }
     }
 }
+
 
 

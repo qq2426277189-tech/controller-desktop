@@ -24,10 +24,16 @@ namespace ControllerDesktop.App
         private DateTime _yDownAt = DateTime.MinValue;
         private bool _yLongHandled;
         private bool _updating;
+        private bool _realExit;
+        public void RealExit() { _realExit = true; Close(); Application.Current.Shutdown(); }
 
         public MainWindow()
         {
             InitializeComponent();
+            Closing += (_, e) =>
+            {
+                if (!_realExit) { e.Cancel = true; Hide(); } // minimize to tray instead of exit
+            };
             _configuration = _store.Load();
             ProfileStore.EnsureDefaults(_configuration);
             AppRuleLists.Load(AppPaths.ConfigDir);
@@ -144,7 +150,7 @@ namespace ControllerDesktop.App
             }
 
             DesktopRecovery.HandleChord(previous, current);
-            HandleYButton(previous, current);
+            Dispatcher.Invoke(() => HandleYButton(previous, current));
             if (_quickMenu != null) return; // menu open: skip mappings
 
             var stickActive = Math.Abs(current.RightX) > 9000 || Math.Abs(current.RightY) > 9000;
@@ -161,6 +167,7 @@ namespace ControllerDesktop.App
             {
                 _yDownAt = DateTime.Now;
                 _yLongHandled = false;
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(ControllerDesktop.Core.AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + "YMenuDebug: opening" + Environment.NewLine); } catch { }
                 ShowQuickMenu(); // tap opens instantly
             }
             else if (pressedNow && !_yLongHandled && (DateTime.Now - _yDownAt).TotalMilliseconds >= 600)
