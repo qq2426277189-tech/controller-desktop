@@ -1,3 +1,4 @@
+using System;
 using ControllerDesktop.Core.Models;
 
 namespace ControllerDesktop.Input;
@@ -11,7 +12,22 @@ public sealed class BindingEngine
         _backend = backend;
     }
 
+    /// <summary>Called every gamepad tick.</summary>
     public void Apply(MappingProfile profile, GamepadState previous, GamepadState current)
+    {
+        try
+        {
+            ApplyBindings(profile, previous, current);
+            ApplyStick(profile.RightStick, current.RightX, current.RightY);
+            ApplyStick(profile.LeftStick, current.LeftX, current.LeftY);
+        }
+        catch
+        {
+            // Never let an input error crash the app.
+        }
+    }
+
+    private void ApplyBindings(MappingProfile profile, GamepadState previous, GamepadState current)
     {
         foreach (var binding in profile.Bindings)
         {
@@ -37,31 +53,28 @@ public sealed class BindingEngine
                 case ActionType.Key:
                     if (isDown) _backend.KeyTap(binding.Value);
                     break;
+                case ActionType.None when button == GamepadButton.Y:
+                    // handled by the app (Y short = quick menu); no synthetic action.
+                    break;
             }
         }
-
-        ApplyStick(profile.RightStick, current.RightX, current.RightY);
     }
 
-    public void ApplyLeftStick(MappingProfile profile, GamepadState current)
-    {
-        ApplyStick(profile.LeftStick, current.LeftX, current.LeftY);
-    }
-
+    /// <summary>Continuous mouse movement while the stick is held off-center.</summary>
     private void ApplyStick(StickSettings stick, short x, short y)
     {
         var nx = Math.Abs(x) <= stick.Deadzone ? 0 : x / 32768.0;
         var ny = Math.Abs(y) <= stick.Deadzone ? 0 : y / 32768.0;
         if (nx == 0 && ny == 0) return;
         var dy = stick.InvertY ? -ny : ny;
-        _backend.MoveMouse((int)(nx * stick.MouseSpeed), (int)(-dy * stick.MouseSpeed));
+        // Per-tick delta; at ~62Hz speed 8 gives a comfortable desktop cursor speed.
+        _backend.MoveMouse((int)Math.Round(nx * stick.MouseSpeed), (int)Math.Round(-dy * stick.MouseSpeed));
     }
 
     private static bool TryGetButton(string name, out GamepadButton button)
     {
         button = default;
-        var upper = name.ToUpperInvariant();
-        switch (upper)
+        switch (name.ToUpperInvariant())
         {
             case "A": button = GamepadButton.A; return true;
             case "B": button = GamepadButton.B; return true;

@@ -12,9 +12,20 @@ namespace ControllerDesktop.App
         public static BindingEngine Engine { get; } = new(Backend);
         public static ProfileStore Store { get; } = new();
 
-        protected override void OnStartup(StartupEventArgs e)
+                protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            DispatcherUnhandledException += (_, args) =>
+            {
+                args.Handled = true;
+                MessageBox.Show("Error: " + args.Exception.Message, "ControllerDesktop");
+            };
+            AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            {
+                try { System.IO.File.AppendAllText(
+                    System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ControllerDesktop-crash.log"),
+                    DateTime.Now + " " + args.ExceptionObject + Environment.NewLine); } catch { }
+            };
             Backend.Initialize();
             Gamepad.Start();
         }
@@ -27,3 +38,4 @@ namespace ControllerDesktop.App
         }
     }
 }
+

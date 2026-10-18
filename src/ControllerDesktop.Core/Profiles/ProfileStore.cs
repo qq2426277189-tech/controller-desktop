@@ -44,6 +44,29 @@ public sealed class ProfileStore
         File.WriteAllText(_path, json);
     }
 
+    public static void EnsureDefaults(AppConfiguration configuration)
+    {
+        foreach (var profile in configuration.Profiles)
+        {
+            if (profile.Bindings.Count > 0) continue;
+            profile.Bindings.AddRange(new[]
+            {
+                new ButtonBinding { Button = "A", Action = ActionType.MouseLeft },
+                new ButtonBinding { Button = "X", Action = ActionType.MouseRight },
+                new ButtonBinding { Button = "B", Action = ActionType.Key, Value = "ESC" },
+                new ButtonBinding { Button = "Y", Action = ActionType.None },
+                new ButtonBinding { Button = "START", Action = ActionType.Key, Value = "LWIN" },
+                new ButtonBinding { Button = "BACK", Action = ActionType.Key, Value = "ALT+LEFT" },
+                new ButtonBinding { Button = "LB", Action = ActionType.Key, Value = "MEDIA_PREV" },
+                new ButtonBinding { Button = "RB", Action = ActionType.Key, Value = "MEDIA_NEXT" },
+                new ButtonBinding { Button = "DPADUP", Action = ActionType.Key, Value = "UP" },
+                new ButtonBinding { Button = "DPADDOWN", Action = ActionType.Key, Value = "DOWN" },
+                new ButtonBinding { Button = "DPADLEFT", Action = ActionType.Key, Value = "LEFT" },
+                new ButtonBinding { Button = "DPADRIGHT", Action = ActionType.Key, Value = "RIGHT" }
+            });
+        }
+    }
+
     private static AppConfiguration CreateDefault()
     {
         var profile = new MappingProfile { Name = "Default" };
@@ -55,4 +78,6 @@ public sealed class ProfileStore
         };
     }
 }
+
+
 

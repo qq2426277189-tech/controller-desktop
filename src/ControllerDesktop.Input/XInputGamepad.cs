@@ -19,49 +19,49 @@ public sealed class XInputGamepad : IDisposable
         public short sThumbRY;
     }
 
-    [DllImport("xinput1_4.dll")]
-    private static extern uint XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState);
+    [DllImport("xinput1_4.dll", EntryPoint = "XInputGetState")]
+    private static extern int XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState);
 
     private Timer? _timer;
-    private readonly object _lock = new();
     private GamepadState _last = new();
     public bool Connected { get; private set; }
 
-    public event Action<GamepadState, GamepadState>? StateChanged;
+    /// <summary>Raised every poll tick (~62Hz) with (previous, current).</summary>
+    public event Action<GamepadState, GamepadState>? Tick;
 
     public void Start()
     {
         if (_timer != null) return;
-        _timer = new Timer(_ => Poll(), null, 0, 16);
+        _timer = new Timer(_ => SafePoll(), null, 0, 16);
+    }
+
+    private void SafePoll()
+    {
+        try { Poll(); }
+        catch { Connected = false; }
     }
 
     private void Poll()
     {
-        lock (_lock)
+        var state = new XINPUT_STATE();
+        var result = XInputGetState(0, ref state);
+        Connected = result == 0;
+        if (!Connected) return;
+
+        var current = new GamepadState
         {
-            var state = new XINPUT_STATE();
-            var result = XInputGetState(0, ref state);
-            Connected = result == 0;
-            if (!Connected) return;
+            Buttons = state.wButtons,
+            LeftX = state.sThumbLX,
+            LeftY = state.sThumbLY,
+            RightX = state.sThumbRX,
+            RightY = state.sThumbRY,
+            LeftTrigger = state.bLeftTrigger,
+            RightTrigger = state.bRightTrigger
+        };
 
-            var current = new GamepadState
-            {
-                Buttons = state.wButtons,
-                LeftX = state.sThumbLX,
-                LeftY = state.sThumbLY,
-                RightX = state.sThumbRX,
-                RightY = state.sThumbRY,
-                LeftTrigger = state.bLeftTrigger,
-                RightTrigger = state.bRightTrigger
-            };
-
-            if (current != _last)
-            {
-                var previous = _last;
-                _last = current;
-                StateChanged?.Invoke(previous, current);
-            }
-        }
+        var previous = _last;
+        _last = current;
+        Tick?.Invoke(previous, current);
     }
 
     public GamepadState Last => _last;
@@ -72,5 +72,3 @@ public sealed class XInputGamepad : IDisposable
         _timer = null;
     }
 }
-
-
