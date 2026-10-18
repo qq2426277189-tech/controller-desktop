@@ -36,8 +36,8 @@ public enum GamepadButton : ushort
     RightStick = 0x0080,
     LB = 0x0100,
     RB = 0x0200,
-    Y = 0x0800,
-    B = 0x1000,
-    A = 0x2000,
+    Y = 0x8000,
+    B = 0x2000,
+    A = 0x1000,
     X = 0x4000
 }
