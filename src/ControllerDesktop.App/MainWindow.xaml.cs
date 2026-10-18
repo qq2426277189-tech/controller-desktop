@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -29,6 +30,8 @@ namespace ControllerDesktop.App
             _configuration = _store.Load();
             ProfileStore.EnsureDefaults(_configuration);
             App.Gamepad.Tick += OnGamepadTick;
+            DesktopRecovery.Notice += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
+            DesktopRecovery.RuntimeLog += msg => { try { File.AppendAllText(System.IO.Path.Combine(AppPaths.LogsDir, "runtime.log"), DateTime.Now.ToString("HH:mm:ss ") + msg + Environment.NewLine); } catch { } };
             _mappingPage = new MappingEditorPage(_language, _store, _configuration);
             _testPage = new GamepadTestPage(_language);
             _language.SetLanguage(_configuration.Language);
@@ -103,9 +106,12 @@ namespace ControllerDesktop.App
             // Bilibili passthrough: no synthetic input while its window is foreground.
             if (ForegroundWatcher.IsBilibili()) return;
 
+            DesktopRecovery.HandleChord(previous, current);
             HandleYButton(previous, current);
             if (_quickMenu != null) return; // menu open: skip mappings
 
+            var stickActive = Math.Abs(current.RightX) > 9000 || Math.Abs(current.RightY) > 9000;
+            if (stickActive) DesktopRecovery.TrackStickActivity(); else DesktopRecovery.StopStickTracking();
             App.Engine.Apply(profile, previous, current);
         }
 
@@ -176,6 +182,8 @@ namespace ControllerDesktop.App
         }
     }
 }
+
+
 
 
 
