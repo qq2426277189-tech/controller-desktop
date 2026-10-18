@@ -32,6 +32,7 @@
                 <StackPanel>
                     <TextBlock x:Name="PageTitle" FontSize="24" FontWeight="Bold" />
                     <TextBlock x:Name="PageDescription" Margin="0,12,0,0" FontSize="14" TextWrapping="Wrap" Foreground="#555" />
+                    <ContentControl x:Name="PageHost" Margin="0,18,0,0" />
                     <TextBlock x:Name="StatusText" Margin="0,28,0,0" FontSize="13" Foreground="#777" TextWrapping="Wrap" />
                 </StackPanel>
             </Border>
@@ -40,3 +41,5 @@
         <TextBlock x:Name="VersionText" Grid.Row="2" Margin="0,14,0,0" Foreground="#888" />
     </Grid>
 </Window>
+
+

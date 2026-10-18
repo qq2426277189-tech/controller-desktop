@@ -14,12 +14,14 @@ namespace ControllerDesktop.App
         private readonly LanguageService _language = new();
         private readonly ProfileStore _store = new();
         private AppConfiguration _configuration;
+        private MappingEditorPage? _mappingPage;
         private bool _updating;
 
         public MainWindow()
         {
             InitializeComponent();
             _configuration = _store.Load();
+            _mappingPage = new MappingEditorPage(_language, _store, _configuration);
             _language.SetLanguage(_configuration.Language);
             Loaded += (_, _) => ApplyLanguage();
         }
@@ -52,14 +54,23 @@ namespace ControllerDesktop.App
         {
             var index = NavList.SelectedIndex;
             PageTitle.Text = NavList.SelectedItem as string ?? "";
-            PageDescription.Text = index switch
+            if (index == 1 && _mappingPage != null)
             {
-                1 => _language.T("MappingPlaceholder"),
-                2 => _language.T("ProfilesPlaceholder"),
-                3 => _language.T("DriverPlaceholder"),
-                4 => _language.T("SettingsPlaceholder"),
-                _ => _language.T("FrameworkReady")
-            };
+                _mappingPage.Reload(_configuration);
+                PageDescription.Text = "";
+                PageHost.Content = _mappingPage;
+            }
+            else
+            {
+                PageHost.Content = null;
+                PageDescription.Text = index switch
+                {
+                    2 => _language.T("ProfilesPlaceholder"),
+                    3 => _language.T("DriverPlaceholder"),
+                    4 => _language.T("SettingsPlaceholder"),
+                    _ => _language.T("FrameworkReady")
+                };
+            }
             StatusText.Text = _language.T("CurrentProfile") + ": " + _configuration.CurrentProfile + Environment.NewLine +
                 _language.T("Status") + ": " + _language.T("FrameworkReady");
         }
@@ -86,4 +97,6 @@ namespace ControllerDesktop.App
         }
     }
 }
+
+
 

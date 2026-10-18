@@ -27,7 +27,19 @@ public sealed class LanguageService
         ["MappingPlaceholder"] = "改键编辑器将在下一阶段实现。",
         ["ProfilesPlaceholder"] = "这里将管理不同程序和不同游戏的按键方案。",
         ["DriverPlaceholder"] = "高级驱动模块需要单独下载、确认安装，并可一键卸载。",
-        ["SettingsPlaceholder"] = "这里将显示路径、语言、更新和诊断设置。"
+        ["SettingsPlaceholder"] = "这里将显示路径、语言、更新和诊断设置。",
+        ["BindingsHeader"] = "按键绑定",
+        ["BindingsHint"] = "在手柄按键列表中填写按键名，选择动作类型，目标填写键名或方向。",
+        ["GamepadButton"] = "手柄按键",
+        ["Action"] = "动作",
+        ["Target"] = "目标",
+        ["StickSettingsHeader"] = "摇杆设置（左摇杆）",
+        ["MouseSpeed"] = "鼠标速度",
+        ["Deadzone"] = "死区",
+        ["Sensitivity"] = "灵敏度",
+        ["InvertY"] = "反转 Y 轴",
+        ["ResetChanges"] = "还原",
+        ["SavedProfile"] = "已保存配置 {0}（{1}）",
     };
 
     private static readonly Dictionary<string, string> En = new()
@@ -52,7 +64,19 @@ public sealed class LanguageService
         ["MappingPlaceholder"] = "The mapping editor will be implemented in the next phase.",
         ["ProfilesPlaceholder"] = "Manage per-application and per-game profiles here.",
         ["DriverPlaceholder"] = "The advanced driver module is downloaded separately and can be uninstalled with one click.",
-        ["SettingsPlaceholder"] = "Paths, language, updates and diagnostics will be configured here."
+        ["SettingsPlaceholder"] = "Paths, language, updates and diagnostics will be configured here.",
+        ["BindingsHeader"] = "Button bindings",
+        ["BindingsHint"] = "Enter a gamepad button, choose an action type, and set the target key or direction.",
+        ["GamepadButton"] = "Gamepad button",
+        ["Action"] = "Action",
+        ["Target"] = "Target",
+        ["StickSettingsHeader"] = "Stick settings (left stick)",
+        ["MouseSpeed"] = "Mouse speed",
+        ["Deadzone"] = "Deadzone",
+        ["Sensitivity"] = "Sensitivity",
+        ["InvertY"] = "Invert Y axis",
+        ["ResetChanges"] = "Reset",
+        ["SavedProfile"] = "Saved profile {0} ({1})",
     };
 
     public string CurrentLanguage { get; private set; } = "zh-CN";
@@ -71,3 +95,4 @@ public sealed class LanguageService
         return table.TryGetValue(key, out var value) ? value : key;
     }
 }
+
