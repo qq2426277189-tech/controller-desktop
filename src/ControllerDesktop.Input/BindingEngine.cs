@@ -60,15 +60,36 @@ public sealed class BindingEngine
         }
     }
 
-    /// <summary>Continuous mouse movement while the stick is held off-center.</summary>
+    private double _accX, _accY;
+
+    /// <summary>Continuous mouse movement, legacy 0.5.1 curve + accumulator for smooth motion.</summary>
     private void ApplyStick(StickSettings stick, short x, short y)
     {
-        var nx = Math.Abs(x) <= stick.Deadzone ? 0 : x / 32768.0;
-        var ny = Math.Abs(y) <= stick.Deadzone ? 0 : y / 32768.0;
-        if (nx == 0 && ny == 0) return;
-        var dy = stick.InvertY ? -ny : ny;
-        // Per-tick delta; at ~62Hz speed 8 gives a comfortable desktop cursor speed.
-        _backend.MoveMouse((int)Math.Round(nx * stick.MouseSpeed), (int)Math.Round(-dy * stick.MouseSpeed));
+        var nx = ApplyDeadzone(x, stick.Deadzone);
+        var ny = ApplyDeadzone(y, stick.Deadzone);
+        if (nx == 0 && ny == 0) { _accX = 0; _accY = 0; return; }
+
+        var speed = Math.Max(stick.MouseSpeed, 6);
+        double sx = nx * (6.0 + Math.Abs(nx) * (speed - 6.0));
+        double syRaw = ny * (6.0 + Math.Abs(ny) * (speed - 6.0));
+        double sy = stick.InvertY ? syRaw : -syRaw;
+
+        _accX += sx;
+        _accY += sy;
+        int dx = (int)_accX;
+        int dy = (int)_accY;
+        _accX -= dx;
+        _accY -= dy;
+        if (dx != 0 || dy != 0)
+            _backend.MoveMouse(dx, dy);
+    }
+
+    private static double ApplyDeadzone(short value, int deadzone)
+    {
+        if (Math.Abs((int)value) <= deadzone) return 0.0;
+        double sign = value < 0 ? -1.0 : 1.0;
+        double magnitude = (Math.Abs((int)value) - deadzone) / (double)(32767 - deadzone);
+        return sign * Math.Min(1.0, magnitude);
     }
 
     private static bool TryGetButton(string name, out GamepadButton button)
