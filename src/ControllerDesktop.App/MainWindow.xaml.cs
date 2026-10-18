@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using ControllerDesktop.Core;
 using ControllerDesktop.Core.Localization;
 using ControllerDesktop.Core.Models;
+using ControllerDesktop.Input;
 using ControllerDesktop.Core.Profiles;
 
 namespace ControllerDesktop.App
@@ -21,6 +23,7 @@ namespace ControllerDesktop.App
         {
             InitializeComponent();
             _configuration = _store.Load();
+            App.Gamepad.StateChanged += OnGamepadStateChanged;
             _mappingPage = new MappingEditorPage(_language, _store, _configuration);
             _language.SetLanguage(_configuration.Language);
             Loaded += (_, _) => ApplyLanguage();
@@ -80,6 +83,13 @@ namespace ControllerDesktop.App
             if (!_updating) UpdatePage();
         }
 
+                private void OnGamepadStateChanged(GamepadState previous, GamepadState current)
+        {
+            var profile = _configuration.Profiles.FirstOrDefault(p => p.Name == _configuration.CurrentProfile);
+            if (profile == null) return;
+            App.Engine.Apply(profile, previous, current);
+        }
+
         private void Chinese_Click(object sender, RoutedEventArgs e)
         {
             _configuration.Language = "zh-CN";
@@ -97,6 +107,8 @@ namespace ControllerDesktop.App
         }
     }
 }
+
+
 
 
 
