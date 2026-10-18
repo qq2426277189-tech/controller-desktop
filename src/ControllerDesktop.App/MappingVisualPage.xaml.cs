@@ -57,22 +57,22 @@ namespace ControllerDesktop.App
 
         private BindingLookup Lookup => new(_profile.Bindings);
 
-        // Button positions on the canvas (label anchor + controller point)
+        // Button positions on the canvas (label anchor + controller point), calibrated to the official Nova Lite render
         private static readonly (string Name, Point Dot, Point Label)[] Buttons =
         {
-            ("Y",  new Point(560, 155), new Point(640, 90)),
-            ("X",  new Point(500, 210), new Point(640, 160)),
-            ("B",  new Point(620, 210), new Point(640, 230)),
-            ("A",  new Point(560, 265), new Point(640, 300)),
-            ("LB", new Point(330, 130), new Point(180, 90)),
-            ("RB", new Point(590, 130), new Point(640, 40)),
-            ("LT", new Point(390, 80),  new Point(180, 30)),
-            ("RT", new Point(530, 80),  new Point(640, -20)),
-            ("BACK", new Point(415, 205), new Point(280, 160)),
-            ("START", new Point(505, 205), new Point(500, 160)),
-            ("LS", new Point(355, 300), new Point(120, 220)),
-            ("RS", new Point(565, 330), new Point(120, 300)),
-            ("DPAD", new Point(395, 380), new Point(120, 400))
+            ("Y",  new Point(516, 223), new Point(720, 180)),
+            ("X",  new Point(492, 243), new Point(720, 225)),
+            ("B",  new Point(539, 244), new Point(720, 270)),
+            ("A",  new Point(516, 264), new Point(720, 315)),
+            ("LB", new Point(292, 206), new Point(20, 190)),
+            ("RB", new Point(547, 206), new Point(720, 80)),
+            ("LT", new Point(372, 237), new Point(20, 120)),
+            ("RT", new Point(467, 237), new Point(720, 130)),
+            ("BACK", new Point(419, 230), new Point(280, 490)),
+            ("START", new Point(419, 306), new Point(440, 490)),
+            ("LS", new Point(292, 261), new Point(20, 260)),
+            ("RS", new Point(482, 318), new Point(560, 470)),
+            ("DPAD", new Point(357, 332), new Point(60, 400))
         };
 
         private void DrawController()
@@ -80,30 +80,15 @@ namespace ControllerDesktop.App
             Diagram.Children.Clear();
             _labels.Clear();
 
-            // Body
-            { var body = new Ellipse { Width = 360, Height = 340, Fill = Brushes.White, Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 3 }; Canvas.SetLeft(body, 280); Canvas.SetTop(body, 110); Diagram.Children.Add(body); }
-            // Left grip, right grip
-            { var gl = new Rectangle { Width = 90, Height = 200, RadiusX = 45, RadiusY = 60, Fill = Brushes.White, Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 3 }; Canvas.SetLeft(gl, 300); Canvas.SetTop(gl, 220); Diagram.Children.Add(gl); }
-            { var gr = new Rectangle { Width = 90, Height = 200, RadiusX = 45, RadiusY = 60, Fill = Brushes.White, Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 3 }; Canvas.SetLeft(gr, 530); Canvas.SetTop(gr, 220); Diagram.Children.Add(gr); }
-            // Triggers (top)
-            { var t1 = new Rectangle { Width = 60, Height = 30, RadiusX = 10, RadiusY = 15, Fill = new SolidColorBrush(Color.FromRgb(0xEE,0xEE,0xF3)), Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 2 }; Canvas.SetLeft(t1, 360); Canvas.SetTop(t1, 60); Diagram.Children.Add(t1); }
-            { var t2 = new Rectangle { Width = 60, Height = 30, RadiusX = 10, RadiusY = 15, Fill = new SolidColorBrush(Color.FromRgb(0xEE,0xEE,0xF3)), Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 2 }; Canvas.SetLeft(t2, 500); Canvas.SetTop(t2, 60); Diagram.Children.Add(t2); }
-            // Sticks
-            { var s1 = new Ellipse { Width = 66, Height = 66, Fill = new SolidColorBrush(Color.FromRgb(0xDD,0xDD,0xE4)), Stroke = new SolidColorBrush(Color.FromRgb(0x77,0x77,0x88)), StrokeThickness = 2 }; Canvas.SetLeft(s1, 322); Canvas.SetTop(s1, 267); Diagram.Children.Add(s1); }
-            { var s2 = new Ellipse { Width = 66, Height = 66, Fill = new SolidColorBrush(Color.FromRgb(0xDD,0xDD,0xE4)), Stroke = new SolidColorBrush(Color.FromRgb(0x77,0x77,0x88)), StrokeThickness = 2 }; Canvas.SetLeft(s2, 532); Canvas.SetTop(s2, 297); Diagram.Children.Add(s2); }
-            // DPad
-            { var d1 = new Rectangle { Width = 26, Height = 74, Fill = new SolidColorBrush(Color.FromRgb(0xDD,0xDD,0xE4)), Stroke = new SolidColorBrush(Color.FromRgb(0x77,0x77,0x88)), StrokeThickness = 2 }; Canvas.SetLeft(d1, 382); Canvas.SetTop(d1, 343); Diagram.Children.Add(d1); }
-            { var d2 = new Rectangle { Width = 74, Height = 26, Fill = new SolidColorBrush(Color.FromRgb(0xDD,0xDD,0xE4)), Stroke = new SolidColorBrush(Color.FromRgb(0x77,0x77,0x88)), StrokeThickness = 2 }; Canvas.SetLeft(d2, 358); Canvas.SetTop(d2, 367); Diagram.Children.Add(d2); }
-            // Face buttons
-            foreach (var b in Buttons.Where(b => b.Name is "A" or "B" or "X" or "Y"))
+            // Official GameSir Nova Lite render (transparent background), desaturated to white
+            var img = new Image
             {
-                var fb = new Ellipse { Width = 40, Height = 40, Fill = new SolidColorBrush(Color.FromRgb(0x2E,0x2E,0x36)) };
-                Canvas.SetLeft(fb, b.Dot.X - 20); Canvas.SetTop(fb, b.Dot.Y - 20);
-                Diagram.Children.Add(fb);
-            }
-            // LB/RB bumps
-            { var b1 = new Rectangle { Width = 70, Height = 24, RadiusX = 10, RadiusY = 10, Fill = new SolidColorBrush(Color.FromRgb(0xCC,0xCC,0xD4)), Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 2 }; Canvas.SetLeft(b1, 295); Canvas.SetTop(b1, 118); Diagram.Children.Add(b1); }
-            { var b2 = new Rectangle { Width = 70, Height = 24, RadiusX = 10, RadiusY = 10, Fill = new SolidColorBrush(Color.FromRgb(0xCC,0xCC,0xD4)), Stroke = new SolidColorBrush(Color.FromRgb(0x88,0x88,0x99)), StrokeThickness = 2 }; Canvas.SetLeft(b2, 555); Canvas.SetTop(b2, 118); Diagram.Children.Add(b2); }
+                Source = new System.Windows.Media.Imaging.BitmapImage(
+                    new Uri("pack://application:,,,/Assets/NovaLite.png")),
+                Width = 760
+            };
+            Canvas.SetLeft(img, 120); Canvas.SetTop(img, 40);
+            Diagram.Children.Add(img);
 
             // Connector lines + labels
             foreach (var b in Buttons)
@@ -112,13 +97,19 @@ namespace ControllerDesktop.App
                 {
                     X1 = b.Dot.X, Y1 = b.Dot.Y,
                     X2 = b.Label.X - 10, Y2 = b.Label.Y + 14,
-                    Stroke = new SolidColorBrush(Color.FromRgb(0xAA,0xAA,0xBB)),
+                    Stroke = new SolidColorBrush(Color.FromRgb(0xB4,0xB6,0xC4)),
                     StrokeThickness = 1.5,
                     StrokeDashArray = new DoubleCollection { 3, 2 }
                 };
                 Diagram.Children.Add(line);
-                var dot = new Ellipse { Width = 6, Height = 6, Fill = new SolidColorBrush(Color.FromRgb(0x77,0x77,0x88)) };
-                Canvas.SetLeft(dot, b.Dot.X - 3); Canvas.SetTop(dot, b.Dot.Y - 3);
+                var dot = new Ellipse
+                {
+                    Width = 10, Height = 10,
+                    Stroke = new SolidColorBrush(Color.FromRgb(0x5A,0x5C,0x68)),
+                    StrokeThickness = 2,
+                    Fill = Brushes.Transparent
+                };
+                Canvas.SetLeft(dot, b.Dot.X - 5); Canvas.SetTop(dot, b.Dot.Y - 5);
                 Diagram.Children.Add(dot);
 
                 var border = new Border
@@ -142,6 +133,8 @@ namespace ControllerDesktop.App
                 _labels[b.Name] = tb;
                 Canvas.SetLeft(border, b.Label.X);
                 Canvas.SetTop(border, b.Label.Y);
+                border.MouseEnter += (_, _) => border.Background = new SolidColorBrush(Color.FromRgb(0x3D,0x40,0x4C));
+                border.MouseLeave += (_, _) => border.Background = new SolidColorBrush(Color.FromRgb(0x2A,0x2B,0x31));
                 border.MouseLeftButtonDown += Label_Click;
                 border.DragEnter += Label_DragEnter;
                 border.Drop += Label_Drop;

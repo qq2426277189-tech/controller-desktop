@@ -17,6 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="ControllerDesktop.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="Assets\NovaLite.png" />
   </ItemGroup>
 
   <ItemGroup>

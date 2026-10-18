@@ -20,7 +20,7 @@
 
         <!-- Controller diagram -->
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="16,0,0,0">
-            <Canvas x:Name="Diagram" Width="760" Height="560" Background="#FCFCFE" />
+            <Canvas x:Name="Diagram" Width="860" Height="560" Background="#FCFCFE" />
         </ScrollViewer>
     </Grid>
 </UserControl>
