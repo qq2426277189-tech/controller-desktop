@@ -17,6 +17,7 @@ namespace ControllerDesktop.App
         private readonly ProfileStore _store = new();
         private AppConfiguration _configuration;
         private MappingEditorPage? _mappingPage;
+        private GamepadTestPage? _testPage;
         private bool _updating;
 
         public MainWindow()
@@ -25,6 +26,7 @@ namespace ControllerDesktop.App
             _configuration = _store.Load();
             App.Gamepad.StateChanged += OnGamepadStateChanged;
             _mappingPage = new MappingEditorPage(_language, _store, _configuration);
+            _testPage = new GamepadTestPage(_language);
             _language.SetLanguage(_configuration.Language);
             Loaded += (_, _) => ApplyLanguage();
         }
@@ -42,6 +44,7 @@ namespace ControllerDesktop.App
             NavList.Items.Clear();
             NavList.Items.Add(_language.T("Dashboard"));
             NavList.Items.Add(_language.T("Mapping"));
+            NavList.Items.Add(_language.T("GamepadTest"));
             NavList.Items.Add(_language.T("Profiles"));
             NavList.Items.Add(_language.T("Driver"));
             NavList.Items.Add(_language.T("Settings"));
@@ -57,7 +60,12 @@ namespace ControllerDesktop.App
         {
             var index = NavList.SelectedIndex;
             PageTitle.Text = NavList.SelectedItem as string ?? "";
-            if (index == 1 && _mappingPage != null)
+            if (index == 2 && _testPage != null)
+            {
+                PageDescription.Text = "";
+                PageHost.Content = _testPage;
+            }
+            else if (index == 1 && _mappingPage != null)
             {
                 _mappingPage.Reload(_configuration);
                 PageDescription.Text = "";
@@ -68,9 +76,9 @@ namespace ControllerDesktop.App
                 PageHost.Content = null;
                 PageDescription.Text = index switch
                 {
-                    2 => _language.T("ProfilesPlaceholder"),
-                    3 => _language.T("DriverPlaceholder"),
-                    4 => _language.T("SettingsPlaceholder"),
+                    3 => _language.T("ProfilesPlaceholder"),
+                    4 => _language.T("DriverPlaceholder"),
+                    5 => _language.T("SettingsPlaceholder"),
                     _ => _language.T("FrameworkReady")
                 };
             }
@@ -107,6 +115,7 @@ namespace ControllerDesktop.App
         }
     }
 }
+
 
 
 

@@ -40,6 +40,10 @@ public sealed class LanguageService
         ["InvertY"] = "反转 Y 轴",
         ["ResetChanges"] = "还原",
         ["SavedProfile"] = "已保存配置 {0}（{1}）",
+        ["GamepadTest"] = "手柄测试",
+        ["GamepadConnected"] = "手柄已连接",
+        ["Buttons"] = "按下的按键",
+        ["TestHint"] = "插上手柄并按几下按键；如果没反应，请把手柄背面的模式开关切到 X（XInput）模式。",
     };
 
     private static readonly Dictionary<string, string> En = new()
@@ -77,6 +81,10 @@ public sealed class LanguageService
         ["InvertY"] = "Invert Y axis",
         ["ResetChanges"] = "Reset",
         ["SavedProfile"] = "Saved profile {0} ({1})",
+        ["GamepadTest"] = "Gamepad test",
+        ["GamepadConnected"] = "Gamepad connected",
+        ["Buttons"] = "Buttons down",
+        ["TestHint"] = "Plug in the controller and press buttons; if nothing shows, switch the mode switch on the back to X (XInput) mode.",
     };
 
     public string CurrentLanguage { get; private set; } = "zh-CN";
