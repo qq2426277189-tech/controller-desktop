@@ -150,7 +150,7 @@ namespace ControllerDesktop.App
             }
 
             DesktopRecovery.HandleChord(previous, current);
-            Dispatcher.Invoke(() => HandleYButton(previous, current));
+            Dispatcher.BeginInvoke(() => HandleYButton(previous, current));
             if (_quickMenu != null) return; // menu open: skip mappings
 
             var stickActive = Math.Abs(current.RightX) > 9000 || Math.Abs(current.RightY) > 9000;
