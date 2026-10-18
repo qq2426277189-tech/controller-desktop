@@ -62,7 +62,9 @@ public sealed class ProfileStore
                 new ButtonBinding { Button = "DPADUP", Action = ActionType.Key, Value = "UP" },
                 new ButtonBinding { Button = "DPADDOWN", Action = ActionType.Key, Value = "DOWN" },
                 new ButtonBinding { Button = "DPADLEFT", Action = ActionType.Key, Value = "LEFT" },
-                new ButtonBinding { Button = "DPADRIGHT", Action = ActionType.Key, Value = "RIGHT" }
+                new ButtonBinding { Button = "DPADRIGHT", Action = ActionType.Key, Value = "RIGHT" },
+                new ButtonBinding { Button = "LT", Action = ActionType.Key, Value = "VOLUME_DOWN" },
+                new ButtonBinding { Button = "RT", Action = ActionType.Key, Value = "VOLUME_UP" }
             });
         }
     }

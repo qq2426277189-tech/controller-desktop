@@ -32,31 +32,48 @@ public sealed class BindingEngine
         foreach (var binding in profile.Bindings)
         {
             if (string.IsNullOrWhiteSpace(binding.Button)) continue;
-            if (!TryGetButton(binding.Button.Trim(), out var button)) continue;
+            var name = binding.Button.Trim().ToUpperInvariant();
+
+            if (name is "LT" or "RT")
+            {
+                var trigPrev = name == "LT" ? previous.LeftTrigger : previous.RightTrigger;
+                var trigNow = name == "LT" ? current.LeftTrigger : current.RightTrigger;
+                var trigWas = trigPrev > 100;
+                var trigIs = trigNow > 100;
+                if (trigWas != trigIs) ApplyAction(binding, trigIs);
+                continue;
+            }
+
+            if (!TryGetButton(name, out var button)) continue;
 
             var wasDown = previous.Has(button);
             var isDown = current.Has(button);
             if (wasDown == isDown) continue;
 
-            switch (binding.Action)
-            {
-                case ActionType.MouseLeft:
-                    _backend.MouseLeft(isDown);
-                    break;
-                case ActionType.MouseRight:
-                    _backend.MouseRight(isDown);
-                    break;
-                case ActionType.Wheel:
-                    if (isDown && int.TryParse(binding.Value, out var delta))
-                        _backend.Wheel(delta);
-                    break;
-                case ActionType.Key:
-                    if (isDown) _backend.KeyTap(binding.Value);
-                    break;
-                case ActionType.None when button == GamepadButton.Y:
-                    // handled by the app (Y short = quick menu); no synthetic action.
-                    break;
-            }
+            ApplyAction(binding, isDown);
+        }
+    }
+
+    private void ApplyAction(ButtonBinding binding, bool isDown)
+    {
+        switch (binding.Action)
+        {
+            case ActionType.MouseLeft:
+                _backend.MouseLeft(isDown);
+                break;
+            case ActionType.MouseRight:
+                _backend.MouseRight(isDown);
+                break;
+            case ActionType.MouseMiddle:
+                _backend.MouseMiddle(isDown);
+                break;
+            case ActionType.Wheel:
+                if (isDown && int.TryParse(binding.Value, out var delta))
+                    _backend.Wheel(delta);
+                break;
+            case ActionType.Key:
+                if (isDown) _backend.KeyTap(binding.Value);
+                break;
         }
     }
 
@@ -115,5 +132,6 @@ public sealed class BindingEngine
         }
     }
 }
+
 
 
