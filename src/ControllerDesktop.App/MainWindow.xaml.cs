@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +20,7 @@ namespace ControllerDesktop.App
         private MappingEditorPage? _mappingPage;
         private MappingVisualPage? _visualPage;
         private GamepadTestPage? _testPage;
+        private DiagnosticsPage? _diagPage;
         private QuickMenuWindow? _quickMenu;
         private DateTime _yDownAt = DateTime.MinValue;
         private bool _yLongHandled;
@@ -43,6 +44,7 @@ namespace ControllerDesktop.App
             _mappingPage = new MappingEditorPage(_language, _store, _configuration);
             _visualPage = new MappingVisualPage(_configuration);
             _testPage = new GamepadTestPage(_language);
+            _diagPage = new DiagnosticsPage();
             _language.SetLanguage(_configuration.Language);
             Loaded += (_, _) => ApplyLanguage();
         }
@@ -65,6 +67,7 @@ namespace ControllerDesktop.App
             NavList.Items.Add(_language.T("Profiles"));
             NavList.Items.Add(_language.T("Driver"));
             NavList.Items.Add(_language.T("Settings"));
+            NavList.Items.Add("诊断");
             NavList.SelectedIndex = selected >= 0 ? selected : 0;
             _updating = false;
 
@@ -92,6 +95,11 @@ namespace ControllerDesktop.App
                 _mappingPage.Reload(_configuration);
                 PageDescription.Text = "";
                 PageHost.Content = _mappingPage;
+            }
+            else if (index == 7 && _diagPage != null)
+            {
+                PageDescription.Text = "";
+                PageHost.Content = _diagPage;
             }
             else
             {
