@@ -1,4 +1,4 @@
-# 交接说明
+﻿# 交接说明
 
 ## 新对话第一步
 1. 打开 D:\ControllerDesktopDev。
@@ -7,12 +7,13 @@
 4. 在 D:\ControllerDesktopDev\src\ControllerDesktop 运行 `git pull` 和 `dotnet build`。
 
 ## 环境
-- .NET SDK：D:\ControllerDesktopDev\app\dotnet.exe
-- Inno Setup：D:\ControllerDesktopDev\tools\InnoSetup\ISCC.exe
+- .NET SDK：D:\ControllerDesktopDevpp\dotnet.exe
+- Inno Setup：D:\ControllerDesktopDev	ools\InnoSetup\ISCC.exe
 - GitHub：https://github.com/qq2426277189-tech/controller-desktop
 
 ## 下一步
-继续 P0：建立中英文资源体系和主界面导航，然后把可运行界面、配置模型和映射引擎逐步做出来。
+- P1：按程序自动配置（桌面/游戏/鼠标模式），然后是托盘诊断页、配置导入导出、实时按键测试页。
+- 映射页底图为 Controller111.png，18 个键位；如需增加 HOME/L3/R3 等独立键，要先有带对应按键的底图再标定。
 
 ## 不要做的事
 - 不要默认安装驱动或运行未知安装包。

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using ControllerDesktop.Core.Models;
 
 namespace ControllerDesktop.Input;
@@ -66,6 +66,12 @@ public sealed class BindingEngine
                 break;
             case ActionType.MouseMiddle:
                 _backend.MouseMiddle(isDown);
+                break;
+            case ActionType.MouseX1:
+                _backend.MouseX1(isDown);
+                break;
+            case ActionType.MouseX2:
+                _backend.MouseX2(isDown);
                 break;
             case ActionType.Wheel:
                 if (isDown && int.TryParse(binding.Value, out var delta))

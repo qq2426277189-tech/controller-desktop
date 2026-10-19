@@ -1,5 +1,12 @@
 ﻿# 变更记录
 
+## 2026-10-19 映射页重做 + 组合键 + 侧键
+- 映射页改为三栏布局：按键列表 / 手柄图示 / 右侧配置面板。
+- 底图换为 Assets/Controller111.png（639x550），18 个按键锚点按图片实测标定。
+- 新增 KeyCaptureDialog，组合键可捕获主键；支持 Ctrl/Shift/Alt/Win 修饰键与预览。
+- 动作类型新增 MouseX1/MouseX2（鼠标侧键），IInputBackend、SendInputBackend、BindingEngine 同步实现 XBUTTON1/2。
+- dotnet build 通过，0 警告、0 错误。
+
 ## 2026-10-17 v2.0.0-alpha.1
 - 建立 WPF 主界面导航框架。
 - 建立中英文语言服务。
@@ -13,11 +20,6 @@
 
 ## 2026-10-17 v0.5.1-beta
 - 生成可用的安装包并发布到 GitHub Releases。
-- 安装包默认安装到 D:\ControllerDesktop，包含当前可用的手柄桌面控制功能，不包含驱动。
-
 
 ## 2026-10-17 部署 v0.5.1-beta
 - 静默部署安装包到 D:\ControllerDesktop。
-- 桌面快捷方式已指向软件本体图标。
-- 清理旧临时工作区，旧个人版源码归档到 D:\ControllerDesktopDev\legacy。
-

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -15,6 +15,10 @@ public sealed class SendInputBackend : IInputBackend
     private const uint MOUSEEVENTF_RIGHTUP = 0x0010;
     private const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
     private const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
+    private const uint MOUSEEVENTF_XDOWN = 0x0080;
+    private const uint MOUSEEVENTF_XUP = 0x0100;
+    private const uint XBUTTON1 = 0x0001;
+    private const uint XBUTTON2 = 0x0002;
     private const uint MOUSEEVENTF_WHEEL = 0x0800;
     private const uint KEYEVENTF_KEYUP = 0x0002;
 
@@ -35,6 +39,16 @@ public sealed class SendInputBackend : IInputBackend
     public void MouseLeft(bool down) => MouseButton(down ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_LEFTUP);
     public void MouseRight(bool down) => MouseButton(down ? MOUSEEVENTF_RIGHTDOWN : MOUSEEVENTF_RIGHTUP);
     public void MouseMiddle(bool down) => MouseButton(down ? MOUSEEVENTF_MIDDLEDOWN : MOUSEEVENTF_MIDDLEUP);
+    public void MouseX1(bool down) => XButton(down, XBUTTON1);
+    public void MouseX2(bool down) => XButton(down, XBUTTON2);
+
+    private static void XButton(bool down, uint button)
+    {
+        var input = new INPUT { type = INPUT_MOUSE };
+        input.union.mi.mouseData = button;
+        input.union.mi.dwFlags = down ? MOUSEEVENTF_XDOWN : MOUSEEVENTF_XUP;
+        SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    }
 
     private static void MouseButton(uint flags)
     {

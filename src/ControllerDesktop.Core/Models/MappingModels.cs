@@ -16,6 +16,8 @@ public enum ActionType
     MouseLeft,
     MouseRight,
     MouseMiddle,
+    MouseX1,
+    MouseX2,
     Wheel,
     Key,
     MediaKey

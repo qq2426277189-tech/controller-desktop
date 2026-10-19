@@ -1,4 +1,4 @@
-namespace ControllerDesktop.Input;
+﻿namespace ControllerDesktop.Input;
 
 public interface IInputBackend
 {
@@ -8,6 +8,8 @@ public interface IInputBackend
     void MouseLeft(bool down);
     void MouseRight(bool down);
     void MouseMiddle(bool down);
+    void MouseX1(bool down);
+    void MouseX2(bool down);
     void Wheel(int delta);
     void KeyTap(string key);
     void Shutdown();
